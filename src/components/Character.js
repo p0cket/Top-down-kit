@@ -1,74 +1,97 @@
 import React, { useState, useEffect, useRef } from "react"
 import HeadSprite from "../sprites/head.png"
 
-const Character = () => {
-  const [position, setPosition] = useState({ x: 100, y: 100 }) // State to track the character's position
-  const keysPressed = useRef({}) // Ref to track which keys are currently pressed
-  const requestRef = useRef() // Ref to store the requestAnimationFrame ID
+const Character = ({ walls }) => {
+  const [position, setPosition] = useState({ x: 100, y: 100 })
+  const keysPressed = useRef({})
+  const requestRef = useRef()
+
+  const checkCollision = (newX, newY) => {
+    const characterRect = {
+      x: newX,
+      y: newY,
+      width: 40,
+      height: 40,
+    }
+
+    for (let wall of walls) {
+      const wallRect = {
+        x: wall.x,
+        y: wall.y,
+        width: wall.width,
+        height: wall.height,
+      }
+
+      if (
+        characterRect.x < wallRect.x + wallRect.width &&
+        characterRect.x + characterRect.width > wallRect.x &&
+        characterRect.y < wallRect.y + wallRect.height &&
+        characterRect.y + characterRect.height > wallRect.y
+      ) {
+        return true // Collision detected
+      }
+    }
+
+    return false // No collision
+  }
 
   const moveCharacter = () => {
-    let { x, y } = position // Destructure the current position
-    const step = 2 // Define the movement step size
+    let { x, y } = position
+    const step = 2
 
-    // Update position based on pressed keys
     if (keysPressed.current["ArrowUp"] || keysPressed.current["w"]) {
-      y -= step // Move up
+      if (!checkCollision(x, y - step)) y -= step
     }
     if (keysPressed.current["ArrowDown"] || keysPressed.current["s"]) {
-      y += step // Move down
+      if (!checkCollision(x, y + step)) y += step
     }
     if (keysPressed.current["ArrowLeft"] || keysPressed.current["a"]) {
-      x -= step // Move left
+      if (!checkCollision(x - step, y)) x -= step
     }
     if (keysPressed.current["ArrowRight"] || keysPressed.current["d"]) {
-      x += step // Move right
+      if (!checkCollision(x + step, y)) x += step
     }
 
-    setPosition({ x, y }) // Update the position state
+    setPosition({ x, y })
   }
 
   useEffect(() => {
-    // Function to handle keydown events
     const handleKeyDown = (event) => {
-      keysPressed.current[event.key] = true // Mark the key as pressed
+      keysPressed.current[event.key] = true
     }
 
-    // Function to handle keyup events
     const handleKeyUp = (event) => {
-      keysPressed.current[event.key] = false // Mark the key as released
+      keysPressed.current[event.key] = false
     }
 
-    // Add event listeners for keydown and keyup events
     window.addEventListener("keydown", handleKeyDown)
     window.addEventListener("keyup", handleKeyUp)
 
-    // Animation loop
     const animate = () => {
-      moveCharacter() // Update character position
-      requestRef.current = requestAnimationFrame(animate) // Request the next frame
+      moveCharacter()
+      requestRef.current = requestAnimationFrame(animate)
     }
 
-    requestRef.current = requestAnimationFrame(animate) // Start the animation loop
+    requestRef.current = requestAnimationFrame(animate)
 
-    // Cleanup function to remove event listeners and cancel the animation frame
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
       window.removeEventListener("keyup", handleKeyUp)
       cancelAnimationFrame(requestRef.current)
     }
-  }, [position]) // Dependency array includes position to update animation when it changes
+  }, [position])
 
   return (
     <img
-      //   src="path/to/character-image.png" // Replace with your character image path
+      //   src="path/to/character-image.png"
       src={HeadSprite} // Replace with your character image path
       alt="Character"
       style={{
-        position: "absolute", // Position the image absolutely
-        top: position.y, // Set the top position based on state
-        left: position.x, // Set the left position based on state
-        width: "40px", // Define the width of the image
-        height: "40px", // Define the height of the image
+        position: "absolute",
+        top: position.y,
+        left: position.x,
+        width: "40px",
+        height: "40px",
       }}
     />
   )
