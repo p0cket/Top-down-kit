@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import HeadSprite from "../sprites/head.png"
 
-const Character = ({ walls }) => {
+const Character = ({ walls, eventSquares }) => {
   const [position, setPosition] = useState({ x: 100, y: 100 })
   const keysPressed = useRef({})
   const requestRef = useRef()
@@ -35,6 +35,38 @@ const Character = ({ walls }) => {
     return false // No collision
   }
 
+  const checkEventTrigger = (newX, newY) => {
+    const characterRect = {
+      x: newX,
+      y: newY,
+      width: 40,
+      height: 40,
+    }
+
+    for (let square of eventSquares) {
+      const squareRect = {
+        x: square.x,
+        y: square.y,
+        width: square.width,
+        height: square.height,
+      }
+
+      if (
+        characterRect.x < squareRect.x + squareRect.width &&
+        characterRect.x + characterRect.width > squareRect.x &&
+        characterRect.y < squareRect.y + squareRect.height &&
+        characterRect.y + characterRect.height > squareRect.y
+      ) {
+        if (square.type === "walk") {
+          console.log("Walk event triggered!") // Trigger walk event
+        }
+        return true
+      }
+    }
+
+    return false
+  }
+
   const moveCharacter = () => {
     let { x, y } = position
     const step = 2
@@ -53,11 +85,43 @@ const Character = ({ walls }) => {
     }
 
     setPosition({ x, y })
+
+    checkEventTrigger(x, y) // Check for event trigger after moving
   }
 
   useEffect(() => {
     const handleKeyDown = (event) => {
       keysPressed.current[event.key] = true
+
+      // Check for activation event when near the square and 'e' is pressed
+      if (event.key === "e") {
+        const characterRect = {
+          x: position.x,
+          y: position.y,
+          width: 40,
+          height: 40,
+        }
+
+        for (let square of eventSquares) {
+          if (square.type === "activate") {
+            const squareRect = {
+              x: square.x,
+              y: square.y,
+              width: square.width,
+              height: square.height,
+            }
+
+            if (
+              characterRect.x < squareRect.x + squareRect.width &&
+              characterRect.x + characterRect.width > squareRect.x &&
+              characterRect.y < squareRect.y + squareRect.height &&
+              characterRect.y + characterRect.height > squareRect.y
+            ) {
+              console.log("Activation event triggered!") // Trigger activation event
+            }
+          }
+        }
+      }
     }
 
     const handleKeyUp = (event) => {
@@ -79,12 +143,12 @@ const Character = ({ walls }) => {
       window.removeEventListener("keyup", handleKeyUp)
       cancelAnimationFrame(requestRef.current)
     }
-  }, [position])
+  }, [position, eventSquares])
 
   return (
     <img
-      //   src="path/to/character-image.png"
       src={HeadSprite} // Replace with your character image path
+      //   src="path/to/character-image.png"
       alt="Character"
       style={{
         position: "absolute",

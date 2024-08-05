@@ -1,7 +1,7 @@
 // src/components/GameCanvas.js
 import React, { useEffect, useRef } from 'react';
 
-const GameCanvas = ({ walls }) => {
+const GameCanvas = ({ walls, eventSquares }) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -21,7 +21,13 @@ const GameCanvas = ({ walls }) => {
     walls.forEach(wall => {
       context.fillRect(wall.x, wall.y, wall.width, wall.height);
     });
-  }, [walls]);
+
+    // Draw event squares
+    context.fillStyle = 'red';
+    eventSquares.forEach(square => {
+      context.fillRect(square.x, square.y, square.width, square.height);
+    });
+  }, [walls, eventSquares]);
 
   return <canvas ref={canvasRef} className="border-2 border-black"></canvas>;
 };
