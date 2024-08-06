@@ -1,7 +1,15 @@
 // src/hooks/useMovement.js
 import { useState, useRef, useEffect } from "react"
+import { checkEventTrigger, checkProximity } from "../utils/collision"
 
-const useMovement = (walls, eventSquares, onEventTrigger, onProximity) => {
+const useMovement = (
+  walls,
+  eventSquares,
+  npcs,
+  onEventTrigger,
+  onProximity,
+  onPositionUpdate
+) => {
   const [position, setPosition] = useState({ x: 100, y: 100 })
   const keysPressed = useRef({})
   const requestRef = useRef()
@@ -32,6 +40,24 @@ const useMovement = (walls, eventSquares, onEventTrigger, onProximity) => {
       }
     }
 
+    for (let npc of npcs) {
+      const npcRect = {
+        x: npc.x,
+        y: npc.y,
+        width: 40,
+        height: 40,
+      }
+
+      if (
+        characterRect.x < npcRect.x + npcRect.width &&
+        characterRect.x + characterRect.width > npcRect.x &&
+        characterRect.y < npcRect.y + npcRect.height &&
+        characterRect.y + characterRect.height > npcRect.y
+      ) {
+        return true // Collision detected
+      }
+    }
+
     return false // No collision
   }
 
@@ -55,6 +81,7 @@ const useMovement = (walls, eventSquares, onEventTrigger, onProximity) => {
     setPosition({ x, y })
     onEventTrigger(x, y) // Check for event trigger after moving
     onProximity(x, y) // Check for proximity to show notification
+    onPositionUpdate({ x, y }) // Update the player's position
   }
 
   useEffect(() => {
@@ -86,7 +113,7 @@ const useMovement = (walls, eventSquares, onEventTrigger, onProximity) => {
       window.removeEventListener("keyup", handleKeyUp)
       cancelAnimationFrame(requestRef.current)
     }
-  }, [position, eventSquares])
+  }, [position, eventSquares, npcs])
 
   return position
 }

@@ -1,4 +1,3 @@
-// src/utils/Collision.js
 export const checkEventTrigger = (newX, newY, eventSquares, isActivationKey = false) => {
     const characterRect = {
       x: newX,
