@@ -1,4 +1,3 @@
-// src/hooks/useMovement.js
 import { useState, useRef, useEffect } from "react";
 import { checkEventTrigger, checkProximity } from "../utils/collision";
 
@@ -10,7 +9,8 @@ const useMovement = (
   onEventTrigger,
   onProximity,
   onPositionUpdate,
-  onEnemyHealthChange
+  onEnemyHealthChange,
+  speed = 4 // Add a default speed parameter
 ) => {
   const [position, setPosition] = useState({ x: 100, y: 100 });
   const keysPressed = useRef({});
@@ -105,7 +105,7 @@ const useMovement = (
 
   const moveCharacter = () => {
     let { x, y } = position;
-    const step = 2;
+    const step = speed; // Use the speed parameter for the step value
 
     if (keysPressed.current["ArrowUp"] || keysPressed.current["w"]) {
       if (!checkCollision(x, y - step)) y -= step;

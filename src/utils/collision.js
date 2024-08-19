@@ -1,5 +1,7 @@
+import { throttleLog } from "./throttleLog";
+
 export const checkEventTrigger = (newX, newY, eventSquares, isActivationKey = false, onSceneChange) => {
-  console.log('checkEventTrigger called with:', { newX, newY, isActivationKey, onSceneChange });
+  throttleLog(() => console.log('checkEventTrigger called with:', { newX, newY, isActivationKey, onSceneChange }));
 
   const characterRect = {
     x: newX,
