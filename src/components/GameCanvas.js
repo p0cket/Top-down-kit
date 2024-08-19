@@ -22,10 +22,14 @@ const GameCanvas = ({ walls, eventSquares }) => {
       context.fillRect(wall.x, wall.y, wall.width, wall.height);
     });
 
-    // Draw event squares
-    context.fillStyle = 'red';
+    // Draw event squares with borders and custom colors
     eventSquares.forEach(square => {
+      context.fillStyle = square.color || 'red'; // Default color is red if none provided
       context.fillRect(square.x, square.y, square.width, square.height);
+
+      context.strokeStyle = square.borderColor || 'black'; // Default border color is black if none provided
+      context.lineWidth = 3; // Set the border thickness
+      context.strokeRect(square.x, square.y, square.width, square.height);
     });
   }, [walls, eventSquares]);
 
