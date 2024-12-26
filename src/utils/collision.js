@@ -1,5 +1,37 @@
 import { throttleLog } from "./throttleLog";
 
+// src/utils/collision.js
+
+export const isColliding = (rect1, rect2) => {
+  return (
+    rect1.x < rect2.x + rect2.width &&
+    rect1.x + rect1.width > rect2.x &&
+    rect1.y < rect2.y + rect2.height &&
+    rect1.y + rect1.height > rect2.y
+  );
+};
+
+export const createRect = (entity) => ({
+  x: entity.x || entity.initialPosition?.x || 0,
+  y: entity.y || entity.initialPosition?.y || 0,
+  width: entity.width || 40,
+  height: entity.height || 40,
+});
+
+export const doesItCollide = (rectToCheck, entities, onCollision) => {
+  for (let entity of entities) {
+    const entityRect = createRect(entity);
+    if (isColliding(rectToCheck, entityRect)) {
+      if (onCollision) {
+        onCollision(entity); // Handle collision if callback provided
+      }
+      return true; // Collision detected
+    }
+  }
+  return false; // No collision
+};
+
+
 export const checkEventTrigger = (newX, newY, eventSquares, isActivationKey = false, onSceneChange) => {
   throttleLog(() => console.log('checkEventTrigger called with:', { newX, newY, isActivationKey, onSceneChange }));
 
@@ -24,6 +56,7 @@ export const checkEventTrigger = (newX, newY, eventSquares, isActivationKey = fa
       characterRect.y < squareRect.y + squareRect.height &&
       characterRect.y + characterRect.height > squareRect.y
     ) {
+      //handles triggered Events. Like the notification or switching scenes.
       if (square.type === "walk" || (square.type === "activate" && isActivationKey)) {
         console.log(`${square.type.charAt(0).toUpperCase() + square.type.slice(1)} event triggered!`);
       } else if (square.type === "scene") {

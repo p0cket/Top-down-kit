@@ -34,14 +34,15 @@ const Enemy = ({ id, initialPosition, initialHealth, onHealthChange }) => {
       <div
         style={{
           position: 'absolute',
-          top: '-20px',
+          top: '-70px',
           left: '0',
           backgroundColor: 'white',
           padding: '2px',
           borderRadius: '3px',
+          width: '120px',
         }}
       >
-        {health}
+        Enemy {health}hp
       </div>
     </div>
   );

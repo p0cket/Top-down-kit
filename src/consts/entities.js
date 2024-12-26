@@ -25,6 +25,7 @@ export const basicWall = [
     type: 'scene',
   };
   
+  // activates something, at least a notification
   export const activateBlock = {
     width: 50,
     height: 50,
@@ -36,7 +37,8 @@ export const basicWall = [
   // Define reusable NPCs
   export const basicNPC = {
     initialPosition: { x: 200, y: 300 },
-    movementRange: { minX: 200, maxX: 300 },
+    movementRange: { minX: 50, maxX: 500 },
+    dealsDamage: true,
   };
   
   // Define reusable enemies

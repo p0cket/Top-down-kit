@@ -12,6 +12,11 @@ const useGameState = () => {
   const [playerPosition, setPlayerPosition] = useState(currentLevel.playerStart);
   const [enemies, setEnemies] = useState(currentLevel.enemies);
   const [locationName, setLocationName] = useState(currentLevel.name);
+  const [playerHealth, setPlayerHealth] = useState(100);
+
+  const handlePlayerHealthChange = (newHealth) => {
+    setPlayerHealth(newHealth);
+  };
 
   const movePlayerOnMap = (direction) => {
     setPlayerMapPosition((prevPosition) => {
@@ -108,6 +113,8 @@ const useGameState = () => {
     setPlayerPosition,
     setNPCPositions,
     setEnemies,
+    playerHealth,
+    handlePlayerHealthChange,
   };
 };
 

@@ -9,8 +9,8 @@ const GameCanvas = ({ walls, eventSquares }) => {
     const context = canvas.getContext('2d');
 
     // Set canvas dimensions
-    canvas.width = 800;
-    canvas.height = 600;
+    canvas.width = 1600;
+    canvas.height = 750;
 
     // Draw initial state
     context.fillStyle = 'green';
@@ -24,12 +24,20 @@ const GameCanvas = ({ walls, eventSquares }) => {
 
     // Draw event squares with borders and custom colors
     eventSquares.forEach(square => {
-      context.fillStyle = square.color || 'red'; // Default color is red if none provided
+      context.fillStyle = square.color || 'red';
       context.fillRect(square.x, square.y, square.width, square.height);
 
-      context.strokeStyle = square.borderColor || 'black'; // Default border color is black if none provided
-      context.lineWidth = 3; // Set the border thickness
+      context.strokeStyle = square.borderColor || 'black';
+      context.lineWidth = 3;
       context.strokeRect(square.x, square.y, square.width, square.height);
+
+      if (square.type) {
+        context.fillStyle = 'black';
+        context.font = '16px Arial';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(square.type, square.x + square.width / 2, square.y + square.height / 2);
+      }
     });
   }, [walls, eventSquares]);
 

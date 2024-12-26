@@ -1,98 +1,72 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from "react"
+import { createRect, doesItCollide } from "../utils/collision"
 
-const NPC = ({ initialPosition, movementRange, walls, playerPosition, onPositionUpdate }) => {
-  const [position, setPosition] = useState(initialPosition);
-  const [direction, setDirection] = useState(1); // 1 for forward, -1 for backward
-  const requestRef = useRef();
+const NPC = ({
+  initialPosition,
+  movementRange,
+  walls,
+  playerPosition,
+  onPositionUpdate,
+}) => {
+  const [position, setPosition] = useState(initialPosition)
+  const [direction, setDirection] = useState(1) // 1 for forward, -1 for backward
+  const requestRef = useRef()
 
   const checkCollisionWithWallsAndPlayer = (newX) => {
-    const npcRect = {
-      x: newX,
-      y: position.y,
-      width: 40,
-      height: 40,
-    };
+    const npcRect = createRect({ x: newX, y: position.y })
 
-    for (let wall of walls) {
-      const wallRect = {
-        x: wall.x,
-        y: wall.y,
-        width: wall.width,
-        height: wall.height,
-      };
+    if (doesItCollide(npcRect, walls)) return true // Collision detected with wall
+    if (doesItCollide(npcRect, [playerPosition])) return true // Collision detected with player
 
-      if (
-        npcRect.x < wallRect.x + wallRect.width &&
-        npcRect.x + npcRect.width > wallRect.x &&
-        npcRect.y < wallRect.y + wallRect.height &&
-        npcRect.y + npcRect.height > wallRect.y
-      ) {
-        return true; // Collision detected with wall
-      }
-    }
-
-    // Check collision with player
-    const playerRect = {
-      x: playerPosition.x,
-      y: playerPosition.y,
-      width: 40,
-      height: 40,
-    };
-
-    if (
-      npcRect.x < playerRect.x + playerRect.width &&
-      npcRect.x + npcRect.width > playerRect.x &&
-      npcRect.y < playerRect.y + playerRect.height &&
-      npcRect.y + npcRect.height > playerRect.y
-    ) {
-      return true; // Collision detected with player
-    }
-
-    return false; // No collision
-  };
+    return false // No collision
+  }
 
   const moveNPC = () => {
-    let { x, y } = position;
-    const step = 1;
-    const { minX, maxX } = movementRange;
+    let { x, y } = position
+    const step = 1
+    const { minX, maxX } = movementRange
 
-    const newX = x + step * direction;
+    const newX = x + step * direction
 
-    if ((newX >= maxX || newX <= minX) || checkCollisionWithWallsAndPlayer(newX)) {
-      setDirection(direction * -1); // Reverse direction
+    if (
+      newX >= maxX ||
+      newX <= minX ||
+      checkCollisionWithWallsAndPlayer(newX)
+    ) {
+      setDirection(direction * -1) // Reverse direction
     } else {
-      x = newX;
+      x = newX
     }
 
-    setPosition({ x, y });
-    onPositionUpdate({ x, y });
-  };
+    setPosition({ x, y })
+    onPositionUpdate({ x, y })
+  }
 
   useEffect(() => {
     const animate = () => {
-      moveNPC();
-      requestRef.current = requestAnimationFrame(animate);
-    };
+      moveNPC()
+      requestRef.current = requestAnimationFrame(animate)
+    }
 
-    requestRef.current = requestAnimationFrame(animate);
+    requestRef.current = requestAnimationFrame(animate)
 
     return () => {
-      cancelAnimationFrame(requestRef.current);
-    };
-  }, [position, direction]);
+      cancelAnimationFrame(requestRef.current)
+    }
+  }, [position, direction])
 
   return (
     <div
       style={{
-        position: 'absolute',
+        position: "absolute",
         top: position.y,
         left: position.x,
-        width: '40px',
-        height: '40px',
-        backgroundColor: 'purple',
+        width: "40px",
+        height: "40px",
+        backgroundColor: "purple",
       }}
-    />
-  );
-};
+    >NPC</div>
+  )
+}
 
-export default NPC;
+export default NPC

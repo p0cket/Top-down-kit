@@ -9,7 +9,28 @@ import {
   basicEnemy,
 } from "./entities"
 
-
+export const StartingArea = {
+  name: "StartingArea",
+  playerStart: { x: 100, y: 100 },
+  walls: basicWall, // Use basicWall component
+  eventSquares: [
+    { ...touchableTriggerBlock, x: 150, y: 150, type: "walk" }, // Use touchableTriggerBlock with specific position
+    { ...activateBlock, x: 400, y: 400 }, // Use activateBlock with specific position
+    { ...sceneChangeBlock, x: 600, y: 450, sceneName: "LevelTwo" }, // Use sceneChangeBlock with specific position and scene name
+  ],
+  npcs: [
+    { ...basicNPC,  }, // Use basicNPC
+    {
+      ...basicNPC,
+      initialPosition: { x: 400, y: 500 },
+      movementRange: { minX: 300, maxX: 600 },
+    }, // Another NPC with different position
+  ],
+  enemies: [
+    { ...basicEnemy }, // Use basicEnemy
+    { ...basicEnemy, id: 2, initialPosition: { x: 450, y: 450 } }, // Another enemy with different ID and position
+  ],
+}
 
 export const LevelTwo = {
   name: "LevelTwo",
@@ -41,28 +62,7 @@ export const LevelThree = {
   enemies: [],
 }
 
-export const StartingArea = {
-  name: "StartingArea",
-  playerStart: { x: 100, y: 100 },
-  walls: basicWall, // Use basicWall component
-  eventSquares: [
-    { ...touchableTriggerBlock, x: 150, y: 150, type: "walk" }, // Use touchableTriggerBlock with specific position
-    { ...activateBlock, x: 400, y: 400 }, // Use activateBlock with specific position
-    { ...sceneChangeBlock, x: 600, y: 450, sceneName: "LevelTwo" }, // Use sceneChangeBlock with specific position and scene name
-  ],
-  npcs: [
-    { ...basicNPC }, // Use basicNPC
-    {
-      ...basicNPC,
-      initialPosition: { x: 400, y: 500 },
-      movementRange: { minX: 400, maxX: 500 },
-    }, // Another NPC with different position
-  ],
-  enemies: [
-    { ...basicEnemy }, // Use basicEnemy
-    { ...basicEnemy, id: 2, initialPosition: { x: 450, y: 450 } }, // Another enemy with different ID and position
-  ],
-}
+
 
 export const LevelNorth = {
   name: "LevelNorth",
