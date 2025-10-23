@@ -11,6 +11,8 @@ const GameCanvas = ({ walls, eventSquares }) => {
     // Set canvas dimensions
     canvas.width = 1600;
     canvas.height = 750;
+    // location(url), request (info sent), response(info you recieve)
+
 
     // Draw initial state
     context.fillStyle = 'green';
